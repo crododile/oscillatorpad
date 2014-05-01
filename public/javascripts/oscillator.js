@@ -28,6 +28,8 @@ $(function(){
 		wavetype = oscillator.type;
 	})
 	
+	
+	
     $('.pad').on('mousedown', function(e) {
 		var traveller = $('<div id="traveller" class="node"></div>');
 		traveller.addClass(wavetype);
@@ -50,7 +52,7 @@ $(function(){
 	  });
 	  
 	  $('#traveller').on('mouseup', function(e){
-		
+		  volumeNode.gain.value = 0;
 		  $('.pad').off('mousemove');
 		  $('#traveller').remove();
 		  var newNode = $('<div class="node"></div>');
@@ -59,9 +61,18 @@ $(function(){
 		  newNode.text(e.clientX + "Hz");
 		  newNode.addClass(wavetype);
 		  $('body').append(newNode);
+		
 		  
 		  var newOs = context.createOscillator();
 		  var newVol = context.createGainNode();
+		  
+	  
+		  	$('div.node').on('click', function(e){
+				debugger;
+				newOs
+		  		$(e.target).remove();
+				newOs.disconnect();
+		  	})
 		  
 		  newOs.start();
 		  newOs.frequency.value = e.clientX;
@@ -70,7 +81,6 @@ $(function(){
 	  	  
 		  newVol.connect(context.destination);
 	  	  newOs.connect(newVol);
-		  
 		  
 	  });
 	  
