@@ -35,7 +35,7 @@ $(function(){
 		traveller.css({ top: e.clientY + $(document).scrollTop() -25, left: e.clientX-25 });
 		traveller.addClass(wavetype);
 		$('body').append(traveller);
-		var datas = []
+		var datas = [];
 		
 		$('#traveller').mousemove(function(e){
 
@@ -45,11 +45,11 @@ $(function(){
 		
 			interval = now - start;
 
-			datas.push([e.clientX, e.clientY, interval])
+			datas.push([e.clientX, e.clientY, interval]);
 			
 			data = {
-	            x: (e.clientX ),
-	            y: (e.clientY ),
+	            x: (e.clientX),
+	            y: (e.clientY),
 	            type: e.handleObj.type
 	        }
 			
@@ -57,7 +57,7 @@ $(function(){
 	
 		  volumeNode.gain.value = $('.pad').height()/data.y - 1;
 	  	  oscillator.frequency.value = data.x;
-		  traveller.text(oscillator.frequency.value + "Hz");
+		  traveller.html("<span style='position:relative; top: 20px'>" + oscillator.frequency.value + "Hz</span>");
 	  });
 	  
 	  $('#traveller').on('mouseup', function(e){
@@ -72,9 +72,9 @@ $(function(){
 		  
 		  newNode.css({ top: e.clientY + $(document).scrollTop() -25 , left: e.clientX -25 });
 		  
-		  datas.push([e.clientX, e.clientY, now3 - start])
+		  datas.push([e.clientX, e.clientY, now3 - start]);
 		  
-		  newNode.text(e.clientX + "Hz");
+		  newNode.html("<span style='position:relative; top: 20px'>" + e.clientX + "Hz</span>");
 		  newNode.addClass(wavetype);
 		  $('body').append(newNode);
 		  
@@ -102,16 +102,16 @@ $(function(){
 				  newOs.frequency.value = arr[0];
 				  newVol.gain.value = $('.pad').height()/arr[1] - 1;
 				  if( index < datas.length -1 ){
-				    smoothly(datas[index+1], index+1, arr[2])
+				    smoothly(datas[index+1], index+1, arr[2]);
 			      }
-				  newNode.css({top: arr[1], left: arr[0]})
-				  newNode.text(arr[0])
-			  }, arr[2] -previousTimeout)
+				  newNode.css({top: arr[1], left: arr[0]});
+				  newNode.html("<span style='position:relative; top: 20px'>" + arr[0] + "Hz</span>")
+
+			  }, arr[2] - previousTimeout);
 		  }
 		  
 		  setInterval(function(){
-			  smoothly(datas[0], 0, 0)
-
+			  smoothly(datas[0], 0, 0);
 		  }, datas[datas.length-1][2]);
 		  
 	  });

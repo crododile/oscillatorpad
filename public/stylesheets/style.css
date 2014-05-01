@@ -29,6 +29,9 @@ a {
 }
 
 .node{
+	text-align: center;
+	text: -25px;
+	border-radius: 20px;
 	height: 50px;
 	width: 50px;
 	position: absolute;
