@@ -13,7 +13,6 @@ $(function(){
 	    throw new Error('AudioContext not supported. :(');
 	}
 		
-	
 	oscillator = context.createOscillator();
 	
 	volumeNode = context.createGainNode();
@@ -33,12 +32,13 @@ $(function(){
 		var d = new Date();
 		var start = d.getTime();
 		var traveller = $('<div id="traveller" class="node"></div>');
+		traveller.css({ top: e.clientY + $(document).scrollTop() -25, left: e.clientX-25 });
 		traveller.addClass(wavetype);
 		$('body').append(traveller);
 		var datas = []
 		
-		$('.pad').mousemove(function(e){
-			offset = $(this).offset();
+		$('#traveller').mousemove(function(e){
+
 			var d2 = new Date();
 			var now = d2.getTime();
 			var interval;
@@ -53,7 +53,7 @@ $(function(){
 	            type: e.handleObj.type
 	        }
 			
-	      traveller.css({ top: e.clientY + $(document).scrollTop(), left: e.clientX });
+	      traveller.css({ top: e.clientY + $(document).scrollTop() -25, left: e.clientX-25 });
 	
 		  volumeNode.gain.value = $('.pad').height()/data.y - 1;
 	  	  oscillator.frequency.value = data.x;
@@ -70,7 +70,7 @@ $(function(){
 		  $('#traveller').remove();
 		  var newNode = $('<div class="node"></div>');
 		  
-		  newNode.css({ top: e.clientY + $(document).scrollTop() , left: e.clientX });
+		  newNode.css({ top: e.clientY + $(document).scrollTop() -25 , left: e.clientX -25 });
 		  
 		  datas.push([e.clientX, e.clientY, now3 - start])
 		  
