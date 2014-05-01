@@ -30,12 +30,22 @@ $(function(){
 	})
 	
     $('.pad').on('mousedown', function(e) {
+		var d = new Date();
+		var start = d.getTime();
 		var traveller = $('<div id="traveller" class="node"></div>');
 		traveller.addClass(wavetype);
 		$('body').append(traveller);
+		var datas = []
 		
 		$('.pad').mousemove(function(e){
 			offset = $(this).offset();
+			var d2 = new Date();
+			var now = d2.getTime();
+			var interval;
+		
+			interval = now - start;
+
+			datas.push([e.clientX, e.clientY, interval])
 			
 			data = {
 	            x: (e.clientX ),
@@ -51,36 +61,58 @@ $(function(){
 	  });
 	  
 	  $('#traveller').on('mouseup', function(e){
+		  var d3 = new Date();
+		  var now3 = d3.getTime();
+		  
 		  volumeNode.gain.value = 0;
+		  
 		  $('.pad').off('mousemove');
 		  $('#traveller').remove();
 		  var newNode = $('<div class="node"></div>');
 		  
 		  newNode.css({ top: e.clientY + $(document).scrollTop() , left: e.clientX });
+		  
+		  datas.push([e.clientX, e.clientY, now3 - start])
+		  
 		  newNode.text(e.clientX + "Hz");
 		  newNode.addClass(wavetype);
 		  $('body').append(newNode);
-		
 		  
 		  var newOs = context.createOscillator();
 		  var newVol = context.createGainNode();
 		  
-	  
 		  	$('div.node').on('click', function(e){
 				var copy = newOs
-
 		  		$(e.target).remove();
 				copy.disconnect();
 				e.stopPropogation();
 		  	})
 		  
 		  newOs.start();
+		
 		  newOs.frequency.value = e.clientX;
 		  newOs.type = wavetype;
 		  newVol.gain.value =  $('.pad').height()/e.clientY - 1;
 	  	  
 		  newVol.connect(context.destination);
 	  	  newOs.connect(newVol);
+		  
+		  var smoothly = function(arr, index, previousTimeout){
+			  setTimeout(function(){
+				  newOs.frequency.value = arr[0];
+				  newVol.gain.value = $('.pad').height()/arr[1] - 1;
+				  if( index < datas.length -1 ){
+				    smoothly(datas[index+1], index+1, arr[2])
+			      }
+				  newNode.css({top: arr[1], left: arr[0]})
+				  newNode.text(arr[0])
+			  }, arr[2] -previousTimeout)
+		  }
+		  
+		  setInterval(function(){
+			  smoothly(datas[0], 0, 0)
+
+		  }, datas[datas.length-1][2]);
 		  
 	  });
 	  
