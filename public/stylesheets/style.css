@@ -1,0 +1,41 @@
+body {
+  padding: 50px;
+  font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+}
+
+a {
+  color: #00B7FF;
+}
+
+.btn{
+	display: inline-block;
+	width: 25%;
+}
+
+.triangle{
+	background-color: red;
+}
+
+.sine{
+		background-color: lightblue;
+}
+
+.sawtooth{
+	background-color: orange;
+}
+
+.square{
+	background-color: green;
+}
+
+.node{
+	height: 50px;
+	width: 50px;
+	position: absolute;
+
+}
+
+.pad{
+	height: 100%;
+	background-color: blue;
+}
