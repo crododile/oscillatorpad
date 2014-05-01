@@ -3,6 +3,7 @@ $(function(){
 	var oscillator;
 	var volumeNode;
 	var wavetype = "sine";
+
 	
 	if (typeof AudioContext !== "undefined") {
 	    context = new AudioContext();
@@ -27,8 +28,6 @@ $(function(){
 		oscillator.type = e.target.textContent.toLowerCase()
 		wavetype = oscillator.type;
 	})
-	
-	
 	
     $('.pad').on('mousedown', function(e) {
 		var traveller = $('<div id="traveller" class="node"></div>');
@@ -68,10 +67,11 @@ $(function(){
 		  
 	  
 		  	$('div.node').on('click', function(e){
-				debugger;
-				newOs
+				var copy = newOs
+
 		  		$(e.target).remove();
-				newOs.disconnect();
+				copy.disconnect();
+				e.stopPropogation();
 		  	})
 		  
 		  newOs.start();
