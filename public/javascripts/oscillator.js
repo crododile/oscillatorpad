@@ -45,7 +45,7 @@ $(function(){
 		
 			interval = now - start;
 
-			datas.push([e.clientX, e.clientY, interval]);
+			datas.push([e.clientX, e.clientY, interval], { top: e.clientY + $(document).scrollTop() -25, left: e.clientX-25 });
 			
 			data = {
 	            x: (e.clientX),
@@ -104,7 +104,7 @@ $(function(){
 				  if( index < datas.length -1 ){
 				    smoothly(datas[index+1], index+1, arr[2]);
 			      }
-				  newNode.css({top: arr[1], left: arr[0]});
+				  newNode.css(arr[3]);
 				  newNode.html("<span style='position:relative; top: 20px'>" + arr[0] + "Hz</span>")
 
 			  }, arr[2] - previousTimeout);
