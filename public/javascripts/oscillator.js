@@ -45,7 +45,7 @@ $(function(){
 		
 			interval = now - start;
 
-			datas.push([e.clientX, e.clientY, interval], { top: e.clientY + $(document).scrollTop() -25, left: e.clientX-25 });
+			datas.push([e.clientX, e.clientY, interval, { top: e.clientY + $(document).scrollTop() -25, left: e.clientX-25 }]);
 			
 			data = {
 	            x: (e.clientX),
