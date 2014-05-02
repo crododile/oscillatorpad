@@ -15,17 +15,17 @@ $(function(){
 	
 	function touchHandler(event)
 	{
+		alert()
 	    var touches = event.changedTouches,
 	        first = touches[0],
 	        type = "";
 	         switch(event.type)
 	    {
 	        case "touchstart": type = "mousedown"; break;
-	        case "touchmove":  type= "mousemove"; break;        
-	        case "touchend":   type= "mouseup"; break;
+	        case "touchmove":  type = "mousemove"; break;        
+	        case "touchend":   type = "mouseup"; break;
 	        default: return;
 	    }
-
 	    event.preventDefault();
 	}
 
