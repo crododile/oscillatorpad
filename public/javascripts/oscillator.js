@@ -37,6 +37,29 @@ $(function(){
 		$('body').append(traveller);
 		var datas = [];
 		
+		$('.pad').mousemove(function(e){
+
+			var d2 = new Date();
+			var now = d2.getTime();
+			var interval;
+		
+			interval = now - start;
+
+			datas.push([e.clientX, e.clientY, interval, { top: e.clientY + $(document).scrollTop() -25, left: e.clientX-25 }]);
+			
+			data = {
+	            x: (e.clientX),
+	            y: (e.clientY),
+	            type: e.handleObj.type
+	        }
+			
+	      traveller.css({ top: e.clientY + $(document).scrollTop() -25, left: e.clientX-25 });
+	
+		  volumeNode.gain.value = $('.pad').height()/data.y - 1;
+	  	  oscillator.frequency.value = data.x;
+		  traveller.html("<span style='position:relative; top: 20px'>" + oscillator.frequency.value + "Hz</span>");
+	  });
+		
 		$('#traveller').mousemove(function(e){
 
 			var d2 = new Date();
