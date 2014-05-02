@@ -15,7 +15,7 @@ $(function(){
 	
 	function touchHandler(event)
 	{
-		alert()
+
 	    var touches = event.changedTouches,
 	        first = touches[0],
 	        type = "";
