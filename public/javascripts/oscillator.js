@@ -21,8 +21,8 @@ $(function(){
 	         switch(event.type)
 	    {
 	        case "touchstart": type = "mousedown"; break;
-	        case "touchmove":  type="mousemove"; break;        
-	        case "touchend":   type="mouseup"; break;
+	        case "touchmove":  type= "mousemove"; break;        
+	        case "touchend":   type= "mouseup"; break;
 	        default: return;
 	    }
 
@@ -30,10 +30,10 @@ $(function(){
 	}
 
 	
-	    document.addEventListener("touchstart", touchHandler, true);
-	    document.addEventListener("touchmove", touchHandler, true);
-	    document.addEventListener("touchend", touchHandler, true);
-	    document.addEventListener("touchcancel", touchHandler, true);    
+    $('.pad').on("touchstart", touchHandler);
+    $('.pad').on("touchmove", touchHandler, true);
+    $('.pad').on("touchend", touchHandler, true);
+    $('.pad').on("touchcancel", touchHandler, true);    
 	
 		
 	oscillator = context.createOscillator();
@@ -129,7 +129,12 @@ $(function(){
 		  
 		  	$('div.node').on('click', function(e){
 				var copy = newOs
-		  		$(e.target).remove();
+				var target = e.target;
+				if(e.target.tagName === 'SPAN'){
+					e.target.parentElement.remove()
+				} else {
+		  		  e.target.remove();
+			    }
 				copy.disconnect();
 				e.stopPropogation();
 		  	})
