@@ -29,11 +29,10 @@ $(function(){
 	    event.preventDefault();
 	}
 	
-
     $('.pad').on("touchstart", touchHandler);
     $('.pad').on("touchmove", touchHandler, true);
     $('.pad').on("touchend", touchHandler, true);
-    $('.pad').on("touchcancel", touchHandler, true);    
+    $('.pad').on("touchcancel", touchHandler, true);   
 			
 	oscillator = context.createOscillator();
 	
@@ -112,7 +111,7 @@ $(function(){
 		  pathNode.css({ top: e.clientY + $(document).scrollTop(), left: e.clientX });
 		  $('body').append(pathNode);
 	
-		  volumeNode.gain.value = $('.pad').height()/e.clientY - 1;
+		  volumeNode.gain.value = ($('.pad').height()/e.clientY - 1)/2;
 	  	  oscillator.frequency.value = e.clientX;
 		  traveller.html("<span style='position:relative; top: 20px'>" + oscillator.frequency.value + "Hz</span>");
 		  
@@ -147,7 +146,7 @@ $(function(){
 		  pathNode.css({ top: y + $(document).scrollTop() -2, left: x -2 });
 		  $('body').append(pathNode);
 		  
-		  volumeNode.gain.value = $('.pad').height()/y - 1;
+		  volumeNode.gain.value = ($('.pad').height()/y - 1)/2;
 	  	  oscillator.frequency.value = x;
 		  traveller.html("<span style='position:relative; top: 20px'>" + oscillator.frequency.value + "Hz</span>");
 	  
@@ -217,7 +216,7 @@ $(function(){
 		
 		  newOs.frequency.value = e.clientX;
 		  newOs.type = wavetype;
-		  newVol.gain.value =  $('.pad').height()/e.clientY - 1;
+		  newVol.gain.value =  ($('.pad').height()/e.clientY - 1)/2;
 	  	  
 		  newVol.connect(context.destination);
 	  	  newOs.connect(newVol);
@@ -230,7 +229,7 @@ $(function(){
 		  var smoothly = function(triad_status, zoomer_class, moment_data, index, previousTimeout){
 			  setTimeout(function(){
 				  newOs.frequency.value = moment_data[0];
-				  newVol.gain.value = $('.pad').height()/moment_data[1] - 1;
+				  newVol.gain.value = ($('.pad').height()/moment_data[1] - 1)/2;
 				  newNode.addClass(zoomer_class);
 				  newNode.css(moment_data[3]);
 				  // newNode.html("<span style='position:relative; top: 20px'>" + moment_data[0] + "Hz</span>");
