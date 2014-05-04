@@ -28,6 +28,7 @@ $(function(){
 	    }
 	    event.preventDefault();
 	}
+	
 
     $('.pad').on("touchstart", touchHandler);
     $('.pad').on("touchmove", touchHandler, true);
@@ -256,9 +257,9 @@ $(function(){
 			  }, moment_data[2] - previousTimeout);
 		  }
 		  
-		  smoothly(triad, datas[0], 0, 0)
 		  var triad_now = triad;
 		  var wavetype_now = wavetype;
+		  smoothly(triad_now, wavetype_now, datas[0], 0, 0)
 		  setInterval(function(){
 			  smoothly(triad_now, wavetype_now, datas[0], 0, 0);
 		  }, datas[datas.length-1][2]); 	  
