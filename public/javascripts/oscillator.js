@@ -42,7 +42,7 @@ $(function(){
 	
 	$('button').on('click',function(e){
 		if (e.target.textContent === "CLEAR LAST NODE"){
-			 $('div.node').last().trigger('click');
+			 $('div.zoomer').last().trigger('click');
 		 }
 		 if (e.target.textContent === "TRIAD"){
 			 if(triad === true) {
@@ -200,14 +200,10 @@ $(function(){
 			  fifthOs.connect(newVol);
 		  }
 		  
-		  	$('div.node').on('click', function(e){
+		  	$('div.zoomer').on('click', function(e){
 				var copy = newOs
 				var target = e.target;
-				if(e.target.tagName === 'SPAN'){
-				  e.target.parentElement.remove()
-				} else {
-		  		  e.target.remove();
-			    }
+		  		e.target.remove();
 				copy.disconnect();
 				e.stopPropogation();
 		  	})

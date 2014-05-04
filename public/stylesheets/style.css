@@ -59,5 +59,6 @@ a {
 
 .pad{
 	height: 100%;
-	background-color: blue;
+	background-image: -webkit-gradient(linear, left top, right top, color-stop(0.01, #ff0000), color-stop(0.33, #ff00ff), color-stop(0.66, #0000ff), color-stop(0.99, #00ffff));
+	background-image: -moz-linear-gradient(left center, #ff0000 1%, #ff00ff 33%, #0000ff 66%, #00ffff 99%);
 }
