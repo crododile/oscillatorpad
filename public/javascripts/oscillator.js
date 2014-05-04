@@ -5,7 +5,6 @@ $(function(){
 	var wavetype = "sine";
 	var triad = false;
 
-
 	if (typeof AudioContext !== "undefined") {
 	    context = new AudioContext();
 	} else if (typeof webkitAudioContext !== "undefined") {
@@ -34,14 +33,11 @@ $(function(){
     $('.pad').on("touchend", touchHandler, true);
     $('.pad').on("touchcancel", touchHandler, true);   
 			
-	oscillator = context.createOscillator();
-	
 	volumeNode = context.createGainNode();
-	
-	volumeNode.connect(context.destination);
-	oscillator.connect(volumeNode);
 	volumeNode.gain.value = 0;
-	
+	volumeNode.connect(context.destination);
+	oscillator = context.createOscillator();
+	oscillator.connect(volumeNode);
 	oscillator.start();
 	
 	$('button').on('click',function(e){
@@ -49,16 +45,16 @@ $(function(){
 			 $('div.node').last().trigger('click');
 		 }
 		 if (e.target.textContent === "TRIAD"){
-			 if(triad === true) {triad = false}
-			 else{
+			 if(triad === true) {
+				 triad = false
+			 } else {
 		     triad = true;
-		 }
+		     }
 			e.stopPropogation();
-		 }
-		 
+		 } 
 		oscillator.type = e.target.textContent.toLowerCase()
 		wavetype = oscillator.type;
-	})
+	});
 
 	
 	
@@ -74,12 +70,10 @@ $(function(){
 		var datas = [];
 		
 		if (triad === true){
-			var thirdOs = context.createOscillator();
-			var fifthOs = context.createOscillator();
-			
+			var thirdOs = context.createOscillator();	
 			thirdOs.connect(volumeNode);
 			thirdOs.start();
-			
+			var fifthOs = context.createOscillator();
 			fifthOs.connect(volumeNode);
 			fifthOs.start();
 			
@@ -87,7 +81,6 @@ $(function(){
 			third.css({ top: e.clientY + $(document).scrollTop() -25, left: (e.clientX * 1.25999) -25 });
 			third.addClass(wavetype);
 			$('body').append(third);
-			
 			var fifth = $('<div class="node"></div>');
 			fifth.css({ top: e.clientY + $(document).scrollTop() -25, left: (e.clientX * 1.498307) -25 });
 			fifth.addClass(wavetype);
@@ -95,39 +88,45 @@ $(function(){
 		}
 		
 		$('.pad').mousemove(function(e){
-
+		
 			var d2 = new Date();
 			var now = d2.getTime();
 			var interval;
-		
 			interval = now - start;
-
 			datas.push([e.clientX, e.clientY, interval, { top: e.clientY + $(document).scrollTop() -4, left: e.clientX - 4 }]);
-	
 			
-	      traveller.css({ top: e.clientY + $(document).scrollTop() -25, left: e.clientX-25 });
-		  var pathNode = $("<div class='path'></div>");
-		  pathNode.addClass(wavetype);
-		  pathNode.css({ top: e.clientY + $(document).scrollTop(), left: e.clientX });
-		  $('body').append(pathNode);
-	
-		  volumeNode.gain.value = ($('.pad').height()/e.clientY - 1)/2;
-	  	  oscillator.frequency.value = e.clientX;
-		  traveller.html("<span style='position:relative; top: 20px'>" + oscillator.frequency.value + "Hz</span>");
-		  
-		if(triad === true){
-
-   			third.css({ top: e.clientY + $(document).scrollTop() -25, left: (e.clientX * 1.25999) -25 });
-			thirdOs.frequency.value = e.clientX *1.25999;
-			third.html("<span style='position:relative; top: 20px'>" + Math.floor(thirdOs.frequency.value) + "Hz</span>");
-			
+			var pathNode = $("<div class='path'></div>");
+			pathNode.addClass(wavetype);
+			pathNode.css({ top: e.clientY + $(document).scrollTop(), left: e.clientX });
+			$('body').append(pathNode);
 		
-   			fifth.css({ top: e.clientY + $(document).scrollTop() -25, left: (e.clientX * 1.498307) -25 });
-			fifthOs.frequency.value = e.clientX *1.498307;
-	
-			fifth.html("<span style='position:relative; top: 20px'>" + Math.floor(fifthOs.frequency.value) + "Hz</span>");
-		}
-	  });
+			volumeNode.gain.value = ($('.pad').height()/e.clientY - 1)/2;
+			oscillator.frequency.value = e.clientX;
+			
+			traveller.css({ top: e.clientY + $(document).scrollTop() -25, left: e.clientX-25 });
+			traveller.html("<span style='position:relative; top: 20px'>" + oscillator.frequency.value + "Hz</span>");
+		
+	  		if(triad === true){
+	  			thirdOs.frequency.value = e.clientX *1.25999;
+				fifthOs.frequency.value = e.clientX *1.498307;
+  		
+			    third.css({ top: e.clientY + $(document).scrollTop() -25, left: (e.clientX * 1.25999) -25 });
+	   			fifth.css({ top: e.clientY + $(document).scrollTop() -25, left: (e.clientX * 1.498307) -25 });		
+
+				third.html("<span style='position:relative; top: 20px'>" + Math.floor(thirdOs.frequency.value) + "Hz</span>");
+				fifth.html("<span style='position:relative; top: 20px'>" + Math.floor(fifthOs.frequency.value) + "Hz</span>");
+			
+				var thirdPath = $("<div class='path'></div>");
+				thirdPath.addClass(wavetype);
+				thirdPath.css({ top: y + $(document).scrollTop(), left: x * 1.25999});
+				$('body').append(thirdPath);
+		  
+				var fifthPath = $("<div class='path'></div>");
+				fifthPath.addClass(wavetype);
+				fifthPath.css({ top: y + $(document).scrollTop(), left: x * 1.498307 });
+				$('body').append(fifthPath);
+	  		}
+		});
 		
 		$('#traveller').mousemove(function(e){
 			var x = e.clientX;
@@ -135,66 +134,71 @@ $(function(){
 			var d2 = new Date();
 			var now = d2.getTime();
 			var interval;
-		
+
 			interval = now - start;
 
 			datas.push([x, y, interval, { top: y + $(document).scrollTop() -4, left: x -4 }]);
 			
-	      traveller.css({ top: y + $(document).scrollTop() -25, left: x-25 });
-		  var pathNode = $("<div class='path'></div>");
-		  pathNode.addClass(wavetype);
-		  pathNode.css({ top: y + $(document).scrollTop() -2, left: x -2 });
-		  $('body').append(pathNode);
-		  
-		  volumeNode.gain.value = ($('.pad').height()/y - 1)/2;
-	  	  oscillator.frequency.value = x;
-		  traveller.html("<span style='position:relative; top: 20px'>" + oscillator.frequency.value + "Hz</span>");
-	  
-		  
-  		if(triad === true){
-  			thirdOs.frequency.value = e.clientX *1.25999;
-			fifthOs.frequency.value = e.clientX *1.498307;
-  		
-		    third.css({ top: e.clientY + $(document).scrollTop() -25, left: (e.clientX * 1.25999) -25 });
-   			fifth.css({ top: e.clientY + $(document).scrollTop() -25, left: (e.clientX * 1.498307) -25 });		
+			var pathNode = $("<div class='path'></div>");
+			pathNode.addClass(wavetype);
+			pathNode.css({ top: y + $(document).scrollTop() -2, left: x -2 });
+			$('body').append(pathNode);
 
-			third.html("<span style='position:relative; top: 20px'>" + Math.floor(thirdOs.frequency.value) + "Hz</span>");
-			fifth.html("<span style='position:relative; top: 20px'>" + Math.floor(fifthOs.frequency.value) + "Hz</span>");
+			volumeNode.gain.value = ($('.pad').height()/y - 1)/2;
+			oscillator.frequency.value = x;
 			
-			var thirdPath = $("<div class='path'></div>");
-			thirdPath.addClass(wavetype);
-			thirdPath.css({ top: y + $(document).scrollTop(), left: x * 1.25999});
-			$('body').append(thirdPath);
+			traveller.css({ top: y + $(document).scrollTop() -25, left: x-25 });
+			traveller.html("<span style='position:relative; top: 20px'>" + oscillator.frequency.value + "Hz</span>");
 		  
-			var fifthPath = $("<div class='path'></div>");
-			fifthPath.addClass(wavetype);
-			fifthPath.css({ top: y + $(document).scrollTop(), left: x * 1.498307 });
-			$('body').append(fifthPath);
-  		}
-		
-		
+	  		if(triad === true){
+	  			thirdOs.frequency.value = e.clientX *1.25999;
+				fifthOs.frequency.value = e.clientX *1.498307;
+  		
+			    third.css({ top: e.clientY + $(document).scrollTop() -25, left: (e.clientX * 1.25999) -25 });
+	   			fifth.css({ top: e.clientY + $(document).scrollTop() -25, left: (e.clientX * 1.498307) -25 });		
+
+				third.html("<span style='position:relative; top: 20px'>" + Math.floor(thirdOs.frequency.value) + "Hz</span>");
+				fifth.html("<span style='position:relative; top: 20px'>" + Math.floor(fifthOs.frequency.value) + "Hz</span>");
+			
+				var thirdPath = $("<div class='path'></div>");
+				thirdPath.addClass(wavetype);
+				thirdPath.css({ top: y + $(document).scrollTop(), left: x * 1.25999});
+				$('body').append(thirdPath);
+		  
+				var fifthPath = $("<div class='path'></div>");
+				fifthPath.addClass(wavetype);
+				fifthPath.css({ top: y + $(document).scrollTop(), left: x * 1.498307 });
+				$('body').append(fifthPath);
+	  		}
 	  });
 	  
 	  $('#traveller').on('mouseup', function(e){
 		  var d3 = new Date();
 		  var now3 = d3.getTime();
-		  
-		  volumeNode.gain.value = 0;
-		  
 		  $('.pad').off('mousemove');
 		  $('#traveller').remove();
-		  var newNode = $('<div class="zoomer"></div>');
-		  
-		  newNode.css({ top: e.clientY + $(document).scrollTop() -4, left: e.clientX -4 });
-		  
+		  volumeNode.gain.value = 0;
 		  datas.push([e.clientX, e.clientY, now3 - start]);
 		  
-		  // newNode.html("<span style='position:relative; top: 20px'>" + e.clientX + "Hz</span>");
-		  // newNode.addClass(wavetype);
+		  var newNode = $('<div class="zoomer"></div>');
+		  newNode.css({ top: e.clientY + $(document).scrollTop() -4, left: e.clientX -4 });
 		  $('body').append(newNode);
 		  
 		  var newOs = context.createOscillator();
 		  var newVol = context.createGainNode();
+		  newOs.start();
+		  
+		  newOs.frequency.value = e.clientX;
+		  newOs.type = wavetype;
+		  newVol.gain.value =  ($('.pad').height()/e.clientY - 1)/2;
+	  	  
+		  newVol.connect(context.destination);
+	  	  newOs.connect(newVol);
+
+		  if(triad === true){
+			  thirdOs.connect(newVol);
+			  fifthOs.connect(newVol);
+		  }
 		  
 		  	$('div.node').on('click', function(e){
 				var copy = newOs
@@ -212,27 +216,12 @@ $(function(){
 		  		  e.target.remove();
 		  	})
 		  
-		  newOs.start();
-		
-		  newOs.frequency.value = e.clientX;
-		  newOs.type = wavetype;
-		  newVol.gain.value =  ($('.pad').height()/e.clientY - 1)/2;
-	  	  
-		  newVol.connect(context.destination);
-	  	  newOs.connect(newVol);
-		  
-		  if(triad === true){
-			  thirdOs.connect(newVol);
-			  fifthOs.connect(newVol);
-		  }
-		  
 		  var smoothly = function(triad_status, zoomer_class, moment_data, index, previousTimeout){
 			  setTimeout(function(){
 				  newOs.frequency.value = moment_data[0];
 				  newVol.gain.value = ($('.pad').height()/moment_data[1] - 1)/2;
 				  newNode.addClass(zoomer_class);
 				  newNode.css(moment_data[3]);
-				  // newNode.html("<span style='position:relative; top: 20px'>" + moment_data[0] + "Hz</span>");
 				  
 				  if(triad_status === true){
 				  	thirdOs.frequency.value = newOs.frequency.value * 1.25999;
@@ -261,8 +250,7 @@ $(function(){
 		  smoothly(triad_now, wavetype_now, datas[0], 0, 0)
 		  setInterval(function(){
 			  smoothly(triad_now, wavetype_now, datas[0], 0, 0);
-		  }, datas[datas.length-1][2]); 	  
-		  
+		  }, datas[datas.length-1][2]); 	    
 	  });
 	});
 })
