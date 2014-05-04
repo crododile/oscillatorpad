@@ -66,6 +66,7 @@ $(function(){
 		var d = new Date();
 		var start = d.getTime();
 		var traveller = $('<div id="traveller" class="node"></div>');
+		traveller.html("<span style='position:relative; top: 20px'>" + oscillator.frequency.value + "Hz</span>");
 		traveller.css({ top: e.clientY + $(document).scrollTop() -25, left: e.clientX-25 });
 		traveller.addClass(wavetype);
 		$('body').append(traveller);
@@ -101,7 +102,7 @@ $(function(){
 		
 			interval = now - start;
 
-			datas.push([e.clientX, e.clientY, interval, { top: e.clientY + $(document).scrollTop() -25, left: e.clientX-25 }]);
+			datas.push([e.clientX, e.clientY, interval, { top: e.clientY + $(document).scrollTop() -4, left: e.clientX - 4 }]);
 	
 			
 	      traveller.css({ top: e.clientY + $(document).scrollTop() -25, left: e.clientX-25 });
@@ -137,12 +138,12 @@ $(function(){
 		
 			interval = now - start;
 
-			datas.push([x, y, interval, { top: y + $(document).scrollTop() -25, left: x-25 }]);
+			datas.push([x, y, interval, { top: y + $(document).scrollTop() -4, left: x -4 }]);
 			
 	      traveller.css({ top: y + $(document).scrollTop() -25, left: x-25 });
 		  var pathNode = $("<div class='path'></div>");
 		  pathNode.addClass(wavetype);
-		  pathNode.css({ top: y + $(document).scrollTop(), left: x });
+		  pathNode.css({ top: y + $(document).scrollTop() -2, left: x -2 });
 		  $('body').append(pathNode);
 		  
 		  volumeNode.gain.value = $('.pad').height()/y - 1;
@@ -182,14 +183,14 @@ $(function(){
 		  
 		  $('.pad').off('mousemove');
 		  $('#traveller').remove();
-		  var newNode = $('<div class="node"></div>');
+		  var newNode = $('<div class="zoomer"></div>');
 		  
-		  newNode.css({ top: e.clientY + $(document).scrollTop() -25 , left: e.clientX -25 });
+		  newNode.css({ top: e.clientY + $(document).scrollTop() -4, left: e.clientX -4 });
 		  
 		  datas.push([e.clientX, e.clientY, now3 - start]);
 		  
-		  newNode.html("<span style='position:relative; top: 20px'>" + e.clientX + "Hz</span>");
-		  newNode.addClass(wavetype);
+		  // newNode.html("<span style='position:relative; top: 20px'>" + e.clientX + "Hz</span>");
+		  // newNode.addClass(wavetype);
 		  $('body').append(newNode);
 		  
 		  var newOs = context.createOscillator();
@@ -225,34 +226,41 @@ $(function(){
 			  fifthOs.connect(newVol);
 		  }
 		  
-		  var smoothly = function(triad_status, moment_data, index, previousTimeout){
+		  var smoothly = function(triad_status, zoomer_class, moment_data, index, previousTimeout){
 			  setTimeout(function(){
 				  newOs.frequency.value = moment_data[0];
 				  newVol.gain.value = $('.pad').height()/moment_data[1] - 1;
-		
+				  newNode.addClass(zoomer_class);
 				  newNode.css(moment_data[3]);
-				  newNode.html("<span style='position:relative; top: 20px'>" + moment_data[0] + "Hz</span>");
+				  // newNode.html("<span style='position:relative; top: 20px'>" + moment_data[0] + "Hz</span>");
 				  
 				  if(triad_status === true){
 				  	thirdOs.frequency.value = newOs.frequency.value * 1.25999;
 					fifthOs.frequency.value = newOs.frequency.value * 1.498307;
+					third.addClass('zoomer');
+					third.removeClass('node');
+					third.empty();
+					fifth.addClass('zoomer');
+					fifth.removeClass('node');
+					fifth.empty();
 					third.css(moment_data[3]);
 					fifth.css(moment_data[3]);
-					third.css({ left: thirdOs.frequency.value -25 });
-					fifth.css({ left: fifthOs.frequency.value -25 });				
+					third.css({ left: thirdOs.frequency.value  });
+					fifth.css({ left: fifthOs.frequency.value  });				
 				  }
 				  
 				  if( index < datas.length -1 ){
-				    smoothly(triad_status, datas[index+1], index+1, moment_data[2]);
+				    smoothly(triad_status, zoomer_class, datas[index+1], index+1, moment_data[2]);
 			      }
 
 			  }, moment_data[2] - previousTimeout);
 		  }
 		  
 		  smoothly(triad, datas[0], 0, 0)
-		  var triad_now = triad
+		  var triad_now = triad;
+		  var wavetype_now = wavetype;
 		  setInterval(function(){
-			  smoothly(triad_now, datas[0], 0, 0);
+			  smoothly(triad_now, wavetype_now, datas[0], 0, 0);
 		  }, datas[datas.length-1][2]); 	  
 		  
 	  });
