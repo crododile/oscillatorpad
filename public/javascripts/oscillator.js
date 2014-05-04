@@ -49,7 +49,10 @@ $(function(){
 			 $('div.node').last().trigger('click');
 		 }
 		 if (e.target.textContent === "TRIAD"){
-			 triad = true;
+			 if(triad === true) {triad = false}
+			 else{
+		     triad = true;
+		 }
 			e.stopPropogation();
 		 }
 		 
@@ -70,9 +73,6 @@ $(function(){
 		var datas = [];
 		
 		if (triad === true){
-			var thirdDatas = [];
-			var fifthDatas = [];
-			
 			var thirdOs = context.createOscillator();
 			var fifthOs = context.createOscillator();
 			
@@ -115,15 +115,15 @@ $(function(){
 		  traveller.html("<span style='position:relative; top: 20px'>" + oscillator.frequency.value + "Hz</span>");
 		  
 		if(triad === true){
-			thirdDatas.push([e.clientX *1.259999, e.clientY, interval, { top: e.clientY + $(document).scrollTop() -25, left: (e.clientX * 1.25999) -25 }]);
+
    			third.css({ top: e.clientY + $(document).scrollTop() -25, left: (e.clientX * 1.25999) -25 });
 			thirdOs.frequency.value = e.clientX *1.25999;
 			third.html("<span style='position:relative; top: 20px'>" + Math.floor(thirdOs.frequency.value) + "Hz</span>");
 			
-			fifthDatas.push([e.clientX *1.498307, e.clientY, interval, { top: e.clientY + $(document).scrollTop() -25, left: (e.clientX * 1.498307) -25 }]);
+		
    			fifth.css({ top: e.clientY + $(document).scrollTop() -25, left: (e.clientX * 1.498307) -25 });
 			fifthOs.frequency.value = e.clientX *1.498307;
-			console.log(fifth, fifthOs)
+	
 			fifth.html("<span style='position:relative; top: 20px'>" + Math.floor(fifthOs.frequency.value) + "Hz</span>");
 		}
 	  });
@@ -151,15 +151,24 @@ $(function(){
 	  
 		  
   		if(triad === true){
-  			thirdDatas.push([e.clientX *1.259999, e.clientY, interval, { top: e.clientY + $(document).scrollTop() -25, left: (e.clientX * 1.25999) -25 }]);
-     		third.css({ top: e.clientY + $(document).scrollTop() -25, left: (e.clientX * 1.25999) -25 });
   			thirdOs.frequency.value = e.clientX *1.25999;
-  			third.html("<span style='position:relative; top: 20px'>" + Math.floor(thirdOs.frequency.value) + "Hz</span>");
-			
-			fifthDatas.push([e.clientX *1.498307, e.clientY, interval, { top: e.clientY + $(document).scrollTop() -25, left: (e.clientX * 1.498307) -25 }]);
-   			fifth.css({ top: e.clientY + $(document).scrollTop() -25, left: (e.clientX * 1.498307) -25 });
 			fifthOs.frequency.value = e.clientX *1.498307;
+  		
+		    third.css({ top: e.clientY + $(document).scrollTop() -25, left: (e.clientX * 1.25999) -25 });
+   			fifth.css({ top: e.clientY + $(document).scrollTop() -25, left: (e.clientX * 1.498307) -25 });		
+
+			third.html("<span style='position:relative; top: 20px'>" + Math.floor(thirdOs.frequency.value) + "Hz</span>");
 			fifth.html("<span style='position:relative; top: 20px'>" + Math.floor(fifthOs.frequency.value) + "Hz</span>");
+			
+			var thirdPath = $("<div class='path'></div>");
+			thirdPath.addClass(wavetype);
+			thirdPath.css({ top: y + $(document).scrollTop(), left: x * 1.25999});
+			$('body').append(thirdPath);
+		  
+			var fifthPath = $("<div class='path'></div>");
+			fifthPath.addClass(wavetype);
+			fifthPath.css({ top: y + $(document).scrollTop(), left: x * 1.498307 });
+			$('body').append(fifthPath);
   		}
 		
 		
@@ -190,7 +199,7 @@ $(function(){
 				var copy = newOs
 				var target = e.target;
 				if(e.target.tagName === 'SPAN'){
-					e.target.parentElement.remove()
+				  e.target.parentElement.remove()
 				} else {
 		  		  e.target.remove();
 			    }
@@ -199,7 +208,6 @@ $(function(){
 		  	})
 			
 		  	$('div.path').on('click', function(e){
-			
 		  		  e.target.remove();
 		  	})
 		  
@@ -212,26 +220,41 @@ $(function(){
 		  newVol.connect(context.destination);
 	  	  newOs.connect(newVol);
 		  
-		  var smoothly = function(arr, index, previousTimeout){
-			  setTimeout(function(){
-				  newOs.frequency.value = arr[0];
-				  newVol.gain.value = $('.pad').height()/arr[1] - 1;
-				  if( index < datas.length -1 ){
-				    smoothly(datas[index+1], index+1, arr[2]);
-			      }
-				  newNode.css(arr[3]);
-				  newNode.html("<span style='position:relative; top: 20px'>" + arr[0] + "Hz</span>")
-
-			  }, arr[2] - previousTimeout);
+		  if(triad === true){
+			  thirdOs.connect(newVol);
+			  fifthOs.connect(newVol);
 		  }
 		  
-		  smoothly(datas[0], 0, 0)
+		  var smoothly = function(triad_status, moment_data, index, previousTimeout){
+			  setTimeout(function(){
+				  newOs.frequency.value = moment_data[0];
+				  newVol.gain.value = $('.pad').height()/moment_data[1] - 1;
+		
+				  newNode.css(moment_data[3]);
+				  newNode.html("<span style='position:relative; top: 20px'>" + moment_data[0] + "Hz</span>");
+				  
+				  if(triad_status === true){
+				  	thirdOs.frequency.value = newOs.frequency.value * 1.25999;
+					fifthOs.frequency.value = newOs.frequency.value * 1.498307;
+					third.css(moment_data[3]);
+					fifth.css(moment_data[3]);
+					third.css({ left: thirdOs.frequency.value -25 });
+					fifth.css({ left: fifthOs.frequency.value -25 });				
+				  }
+				  
+				  if( index < datas.length -1 ){
+				    smoothly(triad_status, datas[index+1], index+1, moment_data[2]);
+			      }
+
+			  }, moment_data[2] - previousTimeout);
+		  }
 		  
+		  smoothly(triad, datas[0], 0, 0)
+		  var triad_now = triad
 		  setInterval(function(){
-			  smoothly(datas[0], 0, 0);
-		  }, datas[datas.length-1][2]); 
+			  smoothly(triad_now, datas[0], 0, 0);
+		  }, datas[datas.length-1][2]); 	  
+		  
 	  });
 	});
-	
-	
 })
