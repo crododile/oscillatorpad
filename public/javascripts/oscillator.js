@@ -42,7 +42,9 @@ $(function(){
 	
 	$('button').on('click',function(e){
 		if (e.target.textContent === "CLEAR LAST NODE"){
-			 $('div.zoomer').last().trigger('click');
+			
+			 $('.zoomer').trigger('click');
+			 return;
 		 }
 		 if (e.target.textContent === "TRIAD"){
 			 if(triad === true) {
@@ -50,7 +52,7 @@ $(function(){
 			 } else {
 		     triad = true;
 		     }
-			e.stopPropogation();
+			return;
 		 } 
 		oscillator.type = e.target.textContent.toLowerCase()
 		wavetype = oscillator.type;
@@ -87,8 +89,7 @@ $(function(){
 			$('body').append(fifth);
 		}
 		
-		$('.pad').mousemove(function(e){
-		
+		$('.pad').mousemove(function(e){	
 			var d2 = new Date();
 			var now = d2.getTime();
 			var interval;
@@ -200,11 +201,15 @@ $(function(){
 			  fifthOs.connect(newVol);
 		  }
 		  
-		  	$('div.zoomer').on('click', function(e){
-				var copy = newOs
-				var target = e.target;
+		  	$('.zoomer').on('click', function(e){
 		  		e.target.remove();
-				copy.disconnect();
+				newOs.disconnect();
+				if(thirdOs){
+					var thirdCopy = thirdOs;
+					var fifthCopy = fifthOs;
+					thirdCopy.disconnect();
+					fifthCopy.disconnect();
+				}
 				e.stopPropogation();
 		  	})
 			
