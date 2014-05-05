@@ -3,7 +3,10 @@ $(function(){
 	var oscillator;
 	var volumeNode;
 	var wavetype = "sine";
-	var triad = false;
+	var triad = false
+	$.fn.reverse = function() {
+		return $(this.get().reverse());
+	}
 
 	if (typeof AudioContext !== "undefined") {
 	    context = new AudioContext();
@@ -43,7 +46,7 @@ $(function(){
 	$('button').on('click',function(e){
 		if (e.target.textContent === "CLEAR LAST NODE"){
 			
-			 $('.zoomer').trigger('click');
+			 $('.zoomer').reverse().trigger('click');
 			 return;
 		 }
 		 if (e.target.textContent === "TRIAD"){
