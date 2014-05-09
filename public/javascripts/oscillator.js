@@ -3,7 +3,9 @@ $(function(){
 	var oscillator;
 	var volumeNode;
 	var wavetype = "sine";
-	var triad = false
+	var triad = false;
+	var id = 0;
+	var nodes = {};
 	$.fn.reverse = function() {
 		return $(this.get().reverse());
 	}
@@ -43,6 +45,37 @@ $(function(){
 	oscillator.connect(volumeNode);
 	oscillator.start();
 	
+  var smoothly = function(os, vol, zNode, triad_status, zoomer_class, moment_data, index, previousTimeout, fulldata){
+	  setTimeout(function(){
+		  os.frequency.value = moment_data[0];
+		  vol.gain.value = ($('.pad').height()/moment_data[1] - 1)/2;
+		  zNode.addClass(zoomer_class);
+		  zNode.css(moment_data[3]);
+		  
+		  if(triad_status === true){
+		  	thirdOs.frequency.value = newOs.frequency.value * 1.25999;
+			fifthOs.frequency.value = newOs.frequency.value * 1.498307;
+			third.addClass('zoomer');
+			third.removeClass('node');
+			third.empty();
+			fifth.addClass('zoomer');
+			fifth.removeClass('node');
+			fifth.empty();
+			third.css(moment_data[3]);
+			fifth.css(moment_data[3]);
+			third.css({ left: thirdOs.frequency.value  });
+			fifth.css({ left: fifthOs.frequency.value  });				
+		  }
+		  
+		  if( index < fulldata.length -1 ){
+		    smoothly(os, vol, zNode, triad_status, zoomer_class, fulldata[index+1], index+1, moment_data[2], fulldata);
+	      }
+
+	  }, moment_data[2] - previousTimeout);
+  }
+	
+
+	
 	$('button').on('click',function(e){
 		if (e.target.textContent === "CLEAR LAST NODE"){
 			
@@ -57,6 +90,27 @@ $(function(){
 		     }
 			return;
 		 } 
+		 if (e.target.textContent === "RESTORE"){
+			 for (var key in nodes) {
+   			
+			   if (nodes.hasOwnProperty(key)){
+				   (function(k,o,v){
+		    			  var newNode = $('<div class="zoomer"></div>');
+		    			  $('body').append(newNode);
+		 				 var newOs = context.createOscillator();
+		 				 var newVol = context.createGainNode();
+		 				 newVol.gain.value = 0;
+		 				 newVol.connect(context.destination);
+		 				 newOs.connect(newVol);
+		 		  setInterval(function(){
+		 			  smoothly(newOs, newVol, newNode, nodes[k][0], nodes[k][1], nodes[k][2][0], 0, 0, nodes[k][2]);
+		 		  }, nodes[k][2][nodes[k][2].length-1][2]); 
+			   
+			   newOs.start();
+		   })(key)
+			 }}
+		 }
+			return;
 		oscillator.type = e.target.textContent.toLowerCase()
 		wavetype = oscillator.type;
 	});
@@ -220,12 +274,12 @@ $(function(){
 		  		  e.target.remove();
 		  	})
 		  
-		  var smoothly = function(triad_status, zoomer_class, moment_data, index, previousTimeout){
+		  var smoothly = function(os, vol, triad_status, zNode, zoomer_class, moment_data, index, previousTimeout, fulldata){
 			  setTimeout(function(){
-				  newOs.frequency.value = moment_data[0];
-				  newVol.gain.value = ($('.pad').height()/moment_data[1] - 1)/2;
-				  newNode.addClass(zoomer_class);
-				  newNode.css(moment_data[3]);
+				  os.frequency.value = moment_data[0];
+				  vol.gain.value = ($('.pad').height()/moment_data[1] - 1)/2;
+				  zNode.addClass(zoomer_class);
+				  zNode.css(moment_data[3]);
 				  
 				  if(triad_status === true){
 				  	thirdOs.frequency.value = newOs.frequency.value * 1.25999;
@@ -242,8 +296,8 @@ $(function(){
 					fifth.css({ left: fifthOs.frequency.value  });				
 				  }
 				  
-				  if( index < datas.length -1 ){
-				    smoothly(triad_status, zoomer_class, datas[index+1], index+1, moment_data[2]);
+				  if( index < fulldata.length -1 ){
+				    smoothly(os, vol, triad_status, newNode, zoomer_class, fulldata[index+1], index+1, moment_data[2], fulldata);
 			      }
 
 			  }, moment_data[2] - previousTimeout);
@@ -251,9 +305,13 @@ $(function(){
 		  
 		  var triad_now = triad;
 		  var wavetype_now = wavetype;
-		  smoothly(triad_now, wavetype_now, datas[0], 0, 0)
+		  smoothly(newOs, newVol, newNode, triad_now, wavetype_now, datas[0], 0, 0, datas);
+
+		  nodes[id] = [triad_now, wavetype_now, datas]
+		  id += 1
+		  console.log(nodes)
 		  setInterval(function(){
-			  smoothly(triad_now, wavetype_now, datas[0], 0, 0);
+			  smoothly(newOs, newVol, triad_now, newNode, wavetype_now, datas[0], 0, 0, datas);
 		  }, datas[datas.length-1][2]); 	    
 	  });
 	});
