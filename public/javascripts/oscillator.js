@@ -66,15 +66,11 @@ $(function(){
 			third.css({ left: thirdOs.frequency.value  });
 			fifth.css({ left: fifthOs.frequency.value  });				
 		  }
-		  
 		  if( index < fulldata.length -1 ){
 		    smoothly(os, vol, zNode, triad_status, zoomer_class, fulldata[index+1], index+1, moment_data[2], fulldata);
 	      }
-
 	  }, moment_data[2] - previousTimeout);
   }
-	
-
 	
 	$('button').on('click',function(e){
 		if (e.target.textContent === "CLEAR LAST NODE"){
@@ -103,7 +99,7 @@ $(function(){
 		 				 newVol.connect(context.destination);
 		 				 newOs.connect(newVol);
 		 		  setInterval(function(){
-		 			  smoothly(newOs, newVol, newNode, nodes[k][0], nodes[k][1], nodes[k][2][0], 0, 0, nodes[k][2]);
+		 			  smoothly(newOs, newVol, newNode,false, nodes[k][1], nodes[k][2][0], 0, 0, nodes[k][2]);
 		 		  }, nodes[k][2][nodes[k][2].length-1][2]); 
 			   
 			   newOs.start();
@@ -114,8 +110,6 @@ $(function(){
 		oscillator.type = e.target.textContent.toLowerCase()
 		wavetype = oscillator.type;
 	});
-
-	
 	
     $('.pad').on('mousedown', function placeNode(e) {
 		var d = new Date();
@@ -305,11 +299,10 @@ $(function(){
 		  
 		  var triad_now = triad;
 		  var wavetype_now = wavetype;
-		  smoothly(newOs, newVol, newNode, triad_now, wavetype_now, datas[0], 0, 0, datas);
+		  smoothly(newOs, newVol, triad_now, newNode, wavetype_now, datas[0], 0, 0, datas);
 
 		  nodes[id] = [triad_now, wavetype_now, datas]
 		  id += 1
-		  console.log(nodes)
 		  setInterval(function(){
 			  smoothly(newOs, newVol, triad_now, newNode, wavetype_now, datas[0], 0, 0, datas);
 		  }, datas[datas.length-1][2]); 	    
