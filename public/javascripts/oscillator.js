@@ -1,4 +1,5 @@
-$(function(){
+$(
+function(){
 	var context;
 	var oscillator;
 	var volumeNode;
@@ -36,8 +37,7 @@ $(function(){
     $('.pad').on("touchstart", touchHandler);
     $('.pad').on("touchmove", touchHandler);
     $('.pad').on("touchend", touchHandler);
-
-			
+		
 	volumeNode = context.createGainNode();
 	volumeNode.gain.value = 0;
 	volumeNode.connect(context.destination);
@@ -45,53 +45,72 @@ $(function(){
 	oscillator.connect(volumeNode);
 	oscillator.start();
 	
-
 	$('button').on('click',function(e){
 		if (e.target.textContent === "CLEAR LAST NODE"){
-			 $('.zoomer').reverse().trigger('click');
-			 return;
-		 }
-		 if (e.target.textContent === "TRIAD"){
-			 if(triad === true) {
-				 triad = false
-			 } else {
-		     triad = true;
-		     }
+			$('.zoomer').reverse().trigger('click');
 			return;
-		 } 
-		 if (e.target.textContent === "RESTORE"){
-			 for (var key in nodes) {
-			   if (nodes.hasOwnProperty(key)){
-				   (function(k,o,v){
-		    			  var newNode = $('<div class="zoomer"></div>');
-		    			  $('body').append(newNode);
-		 				 var newOs = context.createOscillator();
-		 				 var newVol = context.createGainNode();
-		 				 newVol.gain.value = 0;
-		 				 newVol.connect(context.destination);
-		 				 newOs.connect(newVol);
-						 if (nodes[k][0] === true){
-							 var thirdOs = context.createOscillator();
-							 thirdOs.connect(newVol);
-							 var fifthOs = context.createOscillator();
-							 fifthOs.connect(newVol);
-				 			var third = $('<div class="node"></div>');
-				 			$('body').append(third);
-				 			var fifth = $('<div class="node"></div>');
-				 			$('body').append(fifth);
-						 }
-		 		  setInterval(function(){
-		 			  smoothly(newOs, newVol, newNode, false, nodes[k][1], nodes[k][2][0], 0, 0, nodes[k][2])
-		 		  }, nodes[k][2][nodes[k][2].length-1][2]); 
-			   
-			   newOs.start();
-		   })(key)
-			 }}
-		 }
+		}
+		if (e.target.textContent === "TRIAD"){
+			if(triad === true) {
+				triad               = false
+			} else {
+				triad               = true;
+			}
 			return;
-		oscillator.type = e.target.textContent.toLowerCase()
-		wavetype = oscillator.type;
-	});
+		} 
+		if (e.target.textContent === "RESTORE"){
+			for (var key in nodes) {
+				if (nodes.hasOwnProperty(key)){
+					(function(k){
+						var newNode      = $('<div class="zoomer"></div>');
+						$('body').append(newNode);
+						var newOs         = context.createOscillator();
+						var newVol        = context.createGainNode();
+						newVol.gain.value = 0;
+						newVol.connect(context.destination);
+						newOs.connect(newVol);
+						if (nodes[k][0] === true){
+							var thirdOs      = context.createOscillator();
+							thirdOs.start()
+							thirdOs.connect(newVol);
+							thirdOs.type = nodes[k][1]
+							var fifthOs      = context.createOscillator();
+							fifthOs.connect(newVol);
+							fifthOs.start();
+							fifthOs.type = nodes[k][1]
+							var third         = $('<div class="node"></div>');
+							$('body').append(third);
+							third.addClass(nodes[k][1]);
+							var fifth         = $('<div class="node"></div>');
+							fifth.addClass(nodes[k][1]);
+							$('body').append(fifth);
+						}
+						
+						$('.zoomer').on('click', function(e){
+							e.target.remove();
+							newOs.disconnect();
+							if(thirdOs){
+								var thirdCopy = thirdOs;
+								var fifthCopy = fifthOs;
+								thirdCopy.disconnect();
+								fifthCopy.disconnect();
+							}
+							e.stopPropogation();
+						})
+						
+						setInterval(function(){
+							smoothly(newOs, newVol, newNode, nodes[k][0], nodes[k][1], nodes[k][2][0], 0, 0, nodes[k][2], thirdOs, fifthOs, third, fifth)
+						}, nodes[k][2][nodes[k][2].length-1][2]); 
+
+						newOs.start();
+					})(key)
+				}}
+			} else {
+				oscillator.type     = e.target.textContent.toLowerCase()
+				wavetype            = oscillator.type;
+			}
+		});
+
 	
     $('.pad').on('mousedown', function placeNode(e) {
 		var d = new Date();
@@ -218,7 +237,7 @@ $(function(){
 	  });
 	});
 	
-    var smoothly = function(os, vol, zNode, triad_status, zoomer_class, moment_data, index, previousTimeout, fulldata, thirdOs, fifthOs, third, fifth){
+    var smoothly = function(os, vol, zNode, triad_status, zoomer_class, moment_data, index, previousTimeout, fulldata, tOs, fOs, tird, fith){
   	  setTimeout(function(){
   		  os.frequency.value = moment_data[0];
   		  vol.gain.value = ($('.pad').height()/moment_data[1] - 1)/2;
@@ -226,22 +245,21 @@ $(function(){
   		  zNode.css(moment_data[3]);
 		  
   		  if(triad_status === true){
-			  debugger
-  		  	thirdOs.frequency.value = os.frequency.value * 1.25999;
-  			fifthOs.frequency.value = os.frequency.value * 1.498307;
-  			third.addClass('zoomer');
-  			third.removeClass('node');
-  			third.empty();
-  			fifth.addClass('zoomer');
-  			fifth.removeClass('node');
-  			fifth.empty();
-  			third.css(moment_data[3]);
-  			fifth.css(moment_data[3]);
-  			third.css({ left: thirdOs.frequency.value  });
-  			fifth.css({ left: fifthOs.frequency.value  });				
+  		  	tOs.frequency.value = os.frequency.value * 1.25999;
+  			fOs.frequency.value = os.frequency.value * 1.498307;
+  			tird.addClass('zoomer');
+  			tird.removeClass('node');
+  			tird.empty();
+  			fith.addClass('zoomer');
+  			fith.removeClass('node');
+  			fith.empty();
+  			tird.css(moment_data[3]);
+  			fith.css(moment_data[3]);
+  			tird.css({ left: tOs.frequency.value  });
+  			fith.css({ left: fOs.frequency.value  });				
   		  }
   		  if( index < fulldata.length -1 ){
-  		    smoothly(os, vol, zNode, triad_status, zoomer_class, fulldata[index+1], index+1, moment_data[2], fulldata, thirdOs, fifthOs, third, fifth);
+  		    smoothly(os, vol, zNode, triad_status, zoomer_class, fulldata[index+1], index+1, moment_data[2], fulldata, tOs, fOs, tird, fith);
   	      }
   	  }, moment_data[2] - previousTimeout);
     }
