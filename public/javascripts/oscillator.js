@@ -1,10 +1,10 @@
-$(
-function(){
+$(function(){
 	var context;
 	var oscillator;
 	var volumeNode;
 	var wavetype = "sine";
 	var triad = false;
+	var touches = [];
 	var id = 0;
 	var nodes = {};
 	$.fn.reverse = function() {
@@ -21,17 +21,28 @@ function(){
 	
 	function touchHandler(event)
 	{
-	    var touches = event.changedTouches,
-	        first = touches[0],
-	        type = "";
-	         switch(event.type)
-	    {
-	        case "touchstart": type = "mousedown"; break;
-	        case "touchmove":  type = "mousemove"; break;        
-	        case "touchend":   type = "mouseup"; break;
-	        default: return;
+		event.preventDefault()
+		console.log(event.type)
+
+		var x = event.originalEvent.changedTouches[0].clientX;
+		var y = event.originalEvent.changedTouches[0].clientY;
+		console.log(x, y)
+	    if(event.type === "touchstart"){
+			console.log('wut');
+			var sevent = jQuery.Event("mousedown", { clientX: x, clientY: y, eggs: 'bacon' })
+			 $(event.target).trigger( sevent );
 	    }
-	    event.preventDefault();
+	    if(event.type === "touchmove"){
+			console.log('win');
+			var sevent = jQuery.Event("mousemove", { clientX: x, clientY: y, eggs: 'bacon' })
+			 $(event.target).trigger( sevent );
+	    }
+	    if(event.type === "touchend"){
+			console.log('wo');
+			var sevent = jQuery.Event("mousedown", { clientX: x, clientY: y, eggs: 'bacon' })
+			 $(event.target).trigger( sevent );
+	    }
+		
 	}
 	
     $('.pad').on("touchstart", touchHandler);
@@ -63,7 +74,6 @@ function(){
 				if (nodes.hasOwnProperty(key)){
 					(function(k){
 						var newNode      = $('<div class="zoomer"></div>');
-					
 						var newOs         = context.createOscillator();
 						var newVol        = context.createGainNode();
 						newVol.gain.value = 0;
@@ -109,15 +119,17 @@ function(){
 
 						newOs.start();
 					})(key)
-				}}
 			} else {
 				oscillator.type     = e.target.textContent.toLowerCase()
 				wavetype            = oscillator.type;
 			}
-		});
+		}
+	}});
 
 	
     $('.pad').on('mousedown', function placeNode(e) {
+		console.log(e)
+		console.log('why', e.clientX, e.clientY, e.eggs)
 		var d = new Date();
 		var start = d.getTime();
 		var traveller = $('<div id="traveller" class="node"></div>');
@@ -270,6 +282,4 @@ function(){
   	      }
   	  }, moment_data[2] - previousTimeout);
     }
-	
-	
 })
