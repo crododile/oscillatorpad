@@ -22,11 +22,8 @@ $(function(){
 	function touchHandler(event)
 	{
 		event.preventDefault()
-		console.log(event.type)
-
 		var x = event.originalEvent.changedTouches[0].clientX;
 		var y = event.originalEvent.changedTouches[0].clientY;
-		console.log(x, y)
 	    if(event.type === "touchstart"){
 			console.log('wut');
 			var sevent = jQuery.Event("mousedown", { clientX: x, clientY: y, eggs: 'bacon' })
@@ -39,10 +36,9 @@ $(function(){
 	    }
 	    if(event.type === "touchend"){
 			console.log('wo');
-			var sevent = jQuery.Event("mousedown", { clientX: x, clientY: y, eggs: 'bacon' })
-			 $(event.target).trigger( sevent );
+			var sevent = jQuery.Event("mouseup", { clientX: x, clientY: y, eggs: 'bacon' })
+			 $('#traveller').trigger( sevent );
 	    }
-		
 	}
 	
     $('.pad').on("touchstart", touchHandler);
@@ -56,7 +52,7 @@ $(function(){
 	oscillator.connect(volumeNode);
 	oscillator.start();
 	
-	$('button').on('click',function(e){
+	$('button').on('click touch',function(e){
 		if (e.target.textContent === "CLEAR LAST NODE"){
 			$('.zoomer').reverse().trigger('click');
 			return;
