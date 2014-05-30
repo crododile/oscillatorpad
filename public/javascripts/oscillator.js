@@ -25,17 +25,14 @@ $(function(){
 		var x = event.originalEvent.changedTouches[0].clientX;
 		var y = event.originalEvent.changedTouches[0].clientY;
 	    if(event.type === "touchstart"){
-			console.log('wut');
 			var sevent = jQuery.Event("mousedown", { clientX: x, clientY: y, eggs: 'bacon' })
 			 $(event.target).trigger( sevent );
 	    }
 	    if(event.type === "touchmove"){
-			console.log('win');
 			var sevent = jQuery.Event("mousemove", { clientX: x, clientY: y, eggs: 'bacon' })
 			 $(event.target).trigger( sevent );
 	    }
 	    if(event.type === "touchend"){
-			console.log('wo');
 			var sevent = jQuery.Event("mouseup", { clientX: x, clientY: y, eggs: 'bacon' })
 			 $('#traveller').trigger( sevent );
 	    }
@@ -52,11 +49,15 @@ $(function(){
 	oscillator.connect(volumeNode);
 	oscillator.start();
 	
-	$('button').on('click touch',function(e){
+	$('button').on('click',function(e){
 		if (e.target.textContent === "CLEAR LAST NODE"){
 			$('.zoomer').reverse().trigger('click');
 			return;
 		}
+		if (e.target.textContent === "SINE"){  wavetype = 'sine'}
+        if (e.target.textContent === "SAWTOOTH"){  wavetype = 'sawtooth'}
+		if (e.target.textContent === "SQUARE"){  wavetype = 'square'}
+        if (e.target.textContent === "TRIANGLE"){  wavetype = 'triangle'}
 		if (e.target.textContent === "TRIAD"){
 			if(triad === true) {
 				triad               = false
@@ -121,6 +122,9 @@ $(function(){
 			}
 		}
 	}});
+	
+	
+	var flat_third = {};
 
 	
     $('.pad').on('mousedown', function placeNode(e) {
