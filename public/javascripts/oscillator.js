@@ -116,12 +116,15 @@ $(function(){
 
 						newOs.start();
 					})(key)
-			} else {
+			}
+		}
+	}
+		 else {
 				oscillator.type     = e.target.textContent.toLowerCase()
 				wavetype            = oscillator.type;
 			}
 		}
-	}});
+	);
 	
 	
 	var flat_third = {};
