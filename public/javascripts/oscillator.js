@@ -44,7 +44,10 @@ $(function(){
 		
 	volumeNode = context.createGainNode();
 	volumeNode.gain.value = 0;
-	volumeNode.connect(context.destination);
+    myOscilloscope = new WavyJones(context, 'oscilliscope');
+	volumeNode.connect(myOscilloscope);
+	
+	myOscilloscope.connect(context.destination);
 	oscillator = context.createOscillator();
 	oscillator.connect(volumeNode);
 	oscillator.start();
@@ -54,17 +57,12 @@ $(function(){
 			$('.zoomer').reverse().trigger('click');
 			return;
 		}
-		if (e.target.textContent === "SINE"){  wavetype = 'sine'}
-        if (e.target.textContent === "SAWTOOTH"){  wavetype = 'sawtooth'}
-		if (e.target.textContent === "SQUARE"){  wavetype = 'square'}
-        if (e.target.textContent === "TRIANGLE"){  wavetype = 'triangle'}
 		if (e.target.textContent === "TRIAD"){
 			if(triad === true) {
 				triad               = false
 			} else {
 				triad               = true;
 			}
-			return;
 		} 
 		if (e.target.textContent === "RESTORE"){
 			for (var key in nodes) {
@@ -116,13 +114,12 @@ $(function(){
 
 						newOs.start();
 					})(key)
-			}
-		}
-	}
-		 else {
+			  } 
+		    }
+		} else {
 				oscillator.type     = e.target.textContent.toLowerCase()
 				wavetype            = oscillator.type;
-			}
+		}
 		}
 	);
 	
@@ -130,7 +127,7 @@ $(function(){
 	var flat_third = {};
 
 	
-    $('.pad').on('mousedown', function placeNode(e) {
+    $('.pad, #oscilliscope').on('mousedown', function placeNode(e) {
 		console.log(e)
 		console.log('why', e.clientX, e.clientY, e.eggs)
 		var d = new Date();
@@ -161,7 +158,7 @@ $(function(){
 			$('body').append(fifth);
 		}
 		
-		$('.pad, #traveller').mousemove(function(e){	
+		$('.pad, #traveller, #oscilliscope').mousemove(function(e){	
 			var d2 = new Date();
 			var now = d2.getTime();
 			var interval;
@@ -204,7 +201,7 @@ $(function(){
 	  $('#traveller').on('mouseup', function(e){
 			var d3 = new Date();
 			var now3 = d3.getTime();
-			$('.pad').off('mousemove');
+			$('.pad, #oscilliscope').off('mousemove');
 			$('#traveller').remove();
 			volumeNode.gain.value = 0;
 			datas.push([e.clientX, e.clientY, now3 - start]);

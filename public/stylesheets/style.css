@@ -7,6 +7,14 @@ a {
   color: #00B7FF;
 }
 
+#oscilliscope {
+	margin: auto;
+	width: 80%;
+	top: 50%;
+    height: 300px;
+	pointer-events:none;
+  }
+
 span{
 	-webkit-touch-callout: none;
 	-webkit-user-select: none;
