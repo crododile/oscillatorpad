@@ -1,3 +1,5 @@
+// TOdo make all currentnodes go through the main wavy jones
+// give each node its own wavy jones on the side that is continuous
 $(function(){
 	var context;
 	var oscillator;
