@@ -4,10 +4,6 @@ script(type='text/javascript' src="//ajax.googleapis.com/ajax/libs/jquery/1.8.3/
 script(src='/javascripts/wavy-jones.js')
 script(src='/javascripts/oscillator.js')
 
-h1 Oscillator pad
-p.
-  choose waveform with the buttons. Pitch increases on x axis, volume increases on y axis.
-
 div.btn-group.btn-group-justified
   div.btn-group
     button.btn.btn-success#square SQUARE
@@ -18,9 +14,13 @@ div.btn-group.btn-group-justified
   div.btn-group
     button.btn.btn-warning#sawtooth SAWTOOTH
 
-button.btn CLEAR LAST NODE
-button.btn TRIAD
-button.btn RESTORE
+div.btn-group.btn-group-justified
+  div.btn-group
+    button.btn.btn-default CLEAR LAST NODE
+  div.btn-group
+    button.btn.btn-default TRIAD
+  div.btn-group
+    button.btn.btn-default RESTORE
 
 div.pad
   div#oscilliscope

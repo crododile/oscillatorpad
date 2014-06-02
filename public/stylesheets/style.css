@@ -1,17 +1,22 @@
 body {
-  padding: 50px;
   font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
 }
 
 a {
   color: #00B7FF;
 }
+#o-container{
+	height:100%;
+}
 
 #oscilliscope {
+	position: absolute;
+	top: 25%;
+	left: 0;
+	right: 0;
 	margin: auto;
 	width: 80%;
-	top: 50%;
-    height: 300px;
+    height: 20em;
 	pointer-events:none;
   }
 
@@ -34,6 +39,7 @@ div{
 }
 
 .btn{
+	z-index: 2;
 	display: inline-block;
 	width: 25%;
 }
@@ -84,7 +90,11 @@ div{
 }
 
 .pad{
-	height: 100%;
+	position: absolute;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
 	background-image: -webkit-gradient(linear, left top, right top, color-stop(0.01, #ff0000), color-stop(0.33, #ff00ff), color-stop(0.66, #0000ff), color-stop(0.99, #00ffff));
 	background-image: -moz-linear-gradient(left center, #ff0000 1%, #ff00ff 33%, #0000ff 66%, #00ffff 99%);
 }
