@@ -221,7 +221,7 @@ $(function(){
 			newOs.type = wavetype;
 			newVol.gain.value =  ($('.pad').height()/e.clientY - 1)/2;
 
-			newVol.connect(context.destination);
+			newVol.connect(myOscilloscope);
 			newOs.connect(newVol);
 
 			if(triad === true){
