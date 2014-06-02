@@ -87,7 +87,6 @@ $(function(){
 							fifthOs.type = nodes[k][1]
 							var third         = $('<div class="zoomer"></div>');
 							$('body').append(third);
-							console.log(nodes[k][1])
 							third.addClass(nodes[k][1]);
 							var fifth         = $('<div class="zoomer"></div>');
 							fifth.addClass(nodes[k][1]);
@@ -108,7 +107,7 @@ $(function(){
 							}
 							e.stopPropogation();
 						})
-						
+						smoothly(newOs, newVol, newNode, nodes[k][0], nodes[k][2][0], 0, 0, nodes[k][2], thirdOs, fifthOs, third, fifth)
 						setInterval(function(){
 							smoothly(newOs, newVol, newNode, nodes[k][0], nodes[k][2][0], 0, 0, nodes[k][2], thirdOs, fifthOs, third, fifth)
 						}, nodes[k][2][nodes[k][2].length-1][2]); 
