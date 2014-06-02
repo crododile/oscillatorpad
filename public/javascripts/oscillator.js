@@ -58,15 +58,13 @@ $(function(){
 		if (e.target.textContent === "CLEAR LAST NODE"){
 			$('.zoomer').reverse().trigger('click');
 			return;
-		}
-		if (e.target.textContent === "TRIAD"){
+		} else if (e.target.textContent === "TRIAD"){
 			if(triad === true) {
 				triad               = false
 			} else {
 				triad               = true;
 			}
-		} 
-		if (e.target.textContent === "RESTORE"){
+		} else if (e.target.textContent === "RESTORE"){
 			for (var key in nodes) {
 				if (nodes.hasOwnProperty(key)){
 					(function(k){
@@ -76,6 +74,7 @@ $(function(){
 						newVol.gain.value = 0;
 						newVol.connect(context.destination);
 						newOs.connect(newVol);
+						newOs.type = nodes[k][1]
 						newNode.addClass(nodes[k][1])
 						if (nodes[k][0] === true){
 							var thirdOs      = context.createOscillator();
@@ -121,7 +120,7 @@ $(function(){
 		} else {
 				oscillator.type     = e.target.textContent.toLowerCase()
 				wavetype            = oscillator.type;
-		}
+		 }
 		}
 	);
 	
@@ -130,8 +129,6 @@ $(function(){
 
 	
     $('.pad, #oscilliscope').on('mousedown', function placeNode(e) {
-		console.log(e)
-		console.log('why', e.clientX, e.clientY, e.eggs)
 		var d = new Date();
 		var start = d.getTime();
 		var traveller = $('<div id="traveller" class="node"></div>');
@@ -145,9 +142,11 @@ $(function(){
 		if (triad === true){
 			var thirdOs = context.createOscillator();	
 			thirdOs.connect(volumeNode);
+			thirdOs.type = wavetype;
 			thirdOs.start();
 			var fifthOs = context.createOscillator();
 			fifthOs.connect(volumeNode);
+			fifthOs.type = wavetype;
 			fifthOs.start();
 			
 			var third = $('<div class="node"></div>');
