@@ -18,6 +18,7 @@ $(function(){
 	} else if (typeof webkitAudioContext !== "undefined") {
 	    context = new webkitAudioContext();
 	} else {
+		alert('Get chrome to try this baby out!')
 	    throw new Error('AudioContext not supported. :(');
 	}
 	
@@ -40,19 +41,19 @@ $(function(){
 	    }
 	}
 	
-    $('.pad').on("touchstart", touchHandler);
-    $('.pad').on("touchmove", touchHandler);
-    $('.pad').on("touchend", touchHandler);
-		
-	volumeNode = context.createGainNode();
+  $('.pad').on("touchstart", touchHandler);
+  $('.pad').on("touchmove", touchHandler);
+  $('.pad').on("touchend", touchHandler);
+
+  myOscilloscope = new WavyJones(context, 'oscilliscope');
+	volumeNode = context.createGain();
 	volumeNode.gain.value = 0;
-    myOscilloscope = new WavyJones(context, 'oscilliscope');
 	volumeNode.connect(myOscilloscope);
 	
 	myOscilloscope.connect(context.destination);
 	oscillator = context.createOscillator();
 	oscillator.connect(volumeNode);
-	oscillator.start();
+	oscillator.start(0);
 	
 	$('button').on('click',function(e){
 		if (e.target.textContent === "CLEAR LAST NODE"){
@@ -70,7 +71,7 @@ $(function(){
 					(function(k){
 						var newNode      = $('<div class="zoomer"></div>');
 						var newOs         = context.createOscillator();
-						var newVol        = context.createGainNode();
+						var newVol        = context.createGain();
 						newVol.gain.value = 0;
 						newVol.connect(context.destination);
 						newOs.connect(newVol);
@@ -112,7 +113,7 @@ $(function(){
 							smoothly(newOs, newVol, newNode, nodes[k][0], nodes[k][2][0], 0, 0, nodes[k][2], thirdOs, fifthOs, third, fifth)
 						}, nodes[k][2][nodes[k][2].length-1][2]); 
 
-						newOs.start();
+						newOs.start(0);
 					})(key)
 			  } 
 		    }
@@ -123,11 +124,8 @@ $(function(){
 		}
 	);
 	
-	
-	var flat_third = {};
-
-	
-    $('.pad, #oscilliscope').on('mousedown', function placeNode(e) {
+		var flat_third = {};
+  $('.pad, #oscilliscope').on('mousedown', function placeNode(e) {
 		var d = new Date();
 		var start = d.getTime();
 		var traveller = $('<div id="traveller" class="node"></div>');
@@ -142,11 +140,11 @@ $(function(){
 			var thirdOs = context.createOscillator();	
 			thirdOs.connect(volumeNode);
 			thirdOs.type = wavetype;
-			thirdOs.start();
+			thirdOs.start(0);
 			var fifthOs = context.createOscillator();
 			fifthOs.connect(volumeNode);
 			fifthOs.type = wavetype;
-			fifthOs.start();
+			fifthOs.start(0);
 			
 			var third = $('<div class="node"></div>');
 			third.css({ top: e.clientY + $(document).scrollTop() -25, left: (e.clientX * 1.25999) -25 });
@@ -212,8 +210,8 @@ $(function(){
 			$('body').append(newNode);
 
 			var newOs = context.createOscillator();
-			var newVol = context.createGainNode();
-			newOs.start();
+			var newVol = context.createGain();
+			newOs.start(0);
 
 			newOs.frequency.value = e.clientX;
 			newOs.type = wavetype;
